@@ -34,19 +34,19 @@ export default async function handler(req, res) {
 
     // 2. Route to the correct Braze API endpoint
     switch (action) {
-      case 'upload_image':
-        // Official Braze Media Library Endpoint
+     case 'upload_image':
         url = `https://${cleanEndpoint}/media_library/create`;
         
-        // We send the image string under multiple possible keys to bypass "Invalid URL" or "Missing field" errors
-        const imageContent = data.base64 || data.image || data.file;
-        
+        // This is the actual base64 string from Figma
+        const imageString = data.base64 || data.image;
+
         body = {
           "name": data.name || `figma_${Date.now()}.png`,
-          "file": imageContent,       // Key for most modern Braze regions
-          "asset_file": imageContent, // Key for some specific API versions
-          "data": imageContent        // Key for older media library endpoints
-        };
+          "file": imageString,        // Braze looks for this...
+          "asset_file": imageString,  // ...or this...
+          "data": imageString         // ...or sometimes this.
+        }
+        
         break;
 
       case 'create_template':
