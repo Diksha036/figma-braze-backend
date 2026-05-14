@@ -18,15 +18,15 @@ export default async function handler(req, res) {
   try {
     const { action, apiKey, endpoint, data } = req.body;
 
-    // Validation: Ensure all primary fields exist
+    // Validation
     if (!apiKey || !endpoint || !action || !data) {
       return res.status(400).json({ 
         error: 'Missing required fields',
-        received: { action: !!action, apiKey: !!apiKey, endpoint: !!endpoint, data: !!data }
+        details: 'Ensure apiKey, endpoint, action, and data are provided.'
       });
     }
 
-    // Clean the endpoint to prevent "Invalid URL" errors
+    // Clean the endpoint
     const cleanEndpoint = endpoint.replace(/^https?:\/\//, '').replace(/\/$/, '');
     
     let url;
@@ -38,13 +38,12 @@ export default async function handler(req, res) {
         // Official Braze Media Library Endpoint
         url = `https://${cleanEndpoint}/media_library/create`;
         body = {
-          "name": data.name || `figma_export_${Date.now()}.png`,
-          "file": data.base64 // Braze expects the base64 string here
+          "name": data.name || `figma_${Date.now()}.png`,
+          "file": data.base64 || data.image // This fixes the 'asset_file' error
         };
         break;
 
       case 'create_template':
-        // Official Braze Email Template Endpoint
         url = `https://${cleanEndpoint}/templates/email/create`;
         body = {
           "template_name": data.name,
@@ -79,11 +78,11 @@ export default async function handler(req, res) {
       });
     }
 
-    // 4. Return success to Figma
+    // 4. Success!
     return res.status(200).json(result);
 
   } catch (error) {
-    console.error('Server error detail:', error);
+    console.error('Server error:', error);
     return res.status(500).json({ 
       error: 'Server error', 
       message: error.message 
