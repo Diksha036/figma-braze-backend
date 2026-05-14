@@ -22,11 +22,11 @@ export default async function handler(req, res) {
     if (!apiKey || !endpoint || !action || !data) {
       return res.status(400).json({ 
         error: 'Missing required fields',
-        details: 'Ensure apiKey, endpoint, action, and data are provided.'
+        details: 'Check if apiKey, endpoint, action, and data are in the request body.'
       });
     }
 
-    // Clean the endpoint
+    // Clean the endpoint to prevent URL errors
     const cleanEndpoint = endpoint.replace(/^https?:\/\//, '').replace(/\/$/, '');
     
     let url;
@@ -37,9 +37,15 @@ export default async function handler(req, res) {
       case 'upload_image':
         // Official Braze Media Library Endpoint
         url = `https://${cleanEndpoint}/media_library/create`;
+        
+        // We send the image string under multiple possible keys to bypass "Invalid URL" or "Missing field" errors
+        const imageContent = data.base64 || data.image || data.file;
+        
         body = {
           "name": data.name || `figma_${Date.now()}.png`,
-          "file": data.base64 || data.image // This fixes the 'asset_file' error
+          "file": imageContent,       // Key for most modern Braze regions
+          "asset_file": imageContent, // Key for some specific API versions
+          "data": imageContent        // Key for older media library endpoints
         };
         break;
 
@@ -78,7 +84,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // 4. Success!
+    // 4. Return success
     return res.status(200).json(result);
 
   } catch (error) {
