@@ -1,7 +1,11 @@
 {
-  "name": "figma-braze-backend",
+  "name": "figma-braze-proxy",
   "version": "1.0.0",
+  "description": "Proxy for Figma to Braze integration",
+  "main": "api/braze-proxy.js",
   "dependencies": {
-    "axios": "^1.6.0"
-  }
+    "form-data": "^4.0.0",
+    "node-fetch": "^3.3.0"
+  },
+  "type": "module"
 }
