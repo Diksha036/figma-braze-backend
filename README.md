@@ -1,9 +1,3 @@
-That is fantastic news! I am thrilled that it is working perfectly for you. Building a custom pipeline between a design tool and an enterprise marketing platform is no small feat.
-
-Here is a complete, professional `README.md` file that you can copy and paste into your GitHub repository. It includes a text-based architecture diagram and a detailed breakdown of exactly how your new system works.
-
----
-
 # 📧 Figma to Braze HTML Email Exporter
 
 This project is a custom Figma plugin and serverless proxy that seamlessly translates Figma designs into editable HTML email templates inside the Braze CRM.
